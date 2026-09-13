@@ -1,0 +1,567 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-09-12T19:30:00.000Z",
+  "__export_source": "insomnia.desktop.app:v9.0.0",
+  "resources": [
+    {
+      "_id": "wrk_van_rental_api",
+      "parentId": null,
+      "modified": 1726169400000,
+      "created": 1726169400000,
+      "name": "Van Rental REST API",
+      "description": "Complete REST API collection for Van Rental platform including Authentication, RBAC, Vans, Images, and Reviews.",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "env_base_van_rental",
+      "parentId": "wrk_van_rental_api",
+      "modified": 1726169400000,
+      "created": 1726169400000,
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://127.0.0.1:8000/api",
+        "owner_token": "",
+        "customer_token": "",
+        "van_id": "1",
+        "image_id": "1",
+        "review_id": "1"
+      },
+      "dataPropertyOrder": {
+        "&": ["base_url", "owner_token", "customer_token", "van_id", "image_id", "review_id"]
+      },
+      "color": "#4f46e5",
+      "isPrivate": false,
+      "metaSortKey": 1726169400000,
+      "_type": "environment"
+    },
+    {
+      "_id": "fld_auth",
+      "parentId": "wrk_van_rental_api",
+      "modified": 1726169400000,
+      "created": 1726169400000,
+      "name": "1. Authentication",
+      "description": "Registration, Login, Token generation, and Profile endpoints",
+      "environment": {},
+      "metaSortKey": 100,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_register_customer",
+      "parentId": "fld_auth",
+      "modified": 1726169400000,
+      "created": 1726169400000,
+      "url": "{{ _.base_url }}/register",
+      "name": "Register Customer",
+      "description": "Registers a new customer user and returns Sanctum Bearer token",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Alice Customer\",\n  \"email\": \"alice.customer@example.com\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\",\n  \"phone_number\": \"+1-555-0991\",\n  \"role\": \"customer\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Accept", "value": "application/json" }
+      ],
+      "authentication": {},
+      "metaSortKey": 101,
+      "_type": "request"
+    },
+    {
+      "_id": "req_register_owner",
+      "parentId": "fld_auth",
+      "modified": 1726169400000,
+      "created": 1726169400000,
+      "url": "{{ _.base_url }}/register",
+      "name": "Register Van Owner",
+      "description": "Registers a new van owner user and returns Sanctum Bearer token",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Dave Fleet Owner\",\n  \"email\": \"dave.owner@example.com\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\",\n  \"phone_number\": \"+1-555-0992\",\n  \"role\": \"owner\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Accept", "value": "application/json" }
+      ],
+      "authentication": {},
+      "metaSortKey": 102,
+      "_type": "request"
+    },
+    {
+      "_id": "req_login_owner",
+      "parentId": "fld_auth",
+      "modified": 1726169400000,
+      "created": 1726169400000,
+      "url": "{{ _.base_url }}/login",
+      "name": "Login Van Owner",
+      "description": "Logs in as seeded van owner (John) and provides owner_token",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"email\": \"owner@example.com\",\n  \"password\": \"password123\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Accept", "value": "application/json" }
+      ],
+      "authentication": {},
+      "metaSortKey": 103,
+      "_type": "request"
+    },
+    {
+      "_id": "req_login_customer",
+      "parentId": "fld_auth",
+      "modified": 1726169400000,
+      "created": 1726169400000,
+      "url": "{{ _.base_url }}/login",
+      "name": "Login Customer",
+      "description": "Logs in as seeded customer (Bob) and provides customer_token",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"email\": \"customer@example.com\",\n  \"password\": \"password123\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Accept", "value": "application/json" }
+      ],
+      "authentication": {},
+      "metaSortKey": 104,
+      "_type": "request"
+    },
+    {
+      "_id": "req_get_me",
+      "parentId": "fld_auth",
+      "modified": 1726169400000,
+      "created": 1726169400000,
+      "url": "{{ _.base_url }}/me",
+      "name": "Get Current User Profile",
+      "description": "Retrieves the authenticated user biodata and role",
+      "method": "GET",
+      "headers": [
+        { "name": "Accept", "value": "application/json" }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.owner_token }}"
+      },
+      "metaSortKey": 105,
+      "_type": "request"
+    },
+    {
+      "_id": "req_logout",
+      "parentId": "fld_auth",
+      "modified": 1726169400000,
+      "created": 1726169400000,
+      "url": "{{ _.base_url }}/logout",
+      "name": "Logout (Revoke Token)",
+      "description": "Revokes current access token",
+      "method": "POST",
+      "headers": [
+        { "name": "Accept", "value": "application/json" }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.owner_token }}"
+      },
+      "metaSortKey": 106,
+      "_type": "request"
+    },
+    {
+      "_id": "fld_vans",
+      "parentId": "wrk_van_rental_api",
+      "modified": 1726169400000,
+      "created": 1726169400000,
+      "name": "2. Van Management & Browsing",
+      "description": "Browsing available vans and owner CRUD operations",
+      "environment": {},
+      "metaSortKey": 200,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_get_vans",
+      "parentId": "fld_vans",
+      "modified": 1726169400000,
+      "created": 1726169400000,
+      "url": "{{ _.base_url }}/vans",
+      "name": "List All Vans (Public)",
+      "description": "Browse all available vans with owner biodata and images",
+      "method": "GET",
+      "headers": [
+        { "name": "Accept", "value": "application/json" }
+      ],
+      "parameters": [],
+      "authentication": {},
+      "metaSortKey": 201,
+      "_type": "request"
+    },
+    {
+      "_id": "req_filter_vans",
+      "parentId": "fld_vans",
+      "modified": 1726169400000,
+      "created": 1726169400000,
+      "url": "{{ _.base_url }}/vans",
+      "name": "Filter Vans by Make/Model/Year",
+      "description": "Public query filter",
+      "method": "GET",
+      "headers": [
+        { "name": "Accept", "value": "application/json" }
+      ],
+      "parameters": [
+        { "name": "make", "value": "Ford" },
+        { "name": "year", "value": "2023" }
+      ],
+      "authentication": {},
+      "metaSortKey": 202,
+      "_type": "request"
+    },
+    {
+      "_id": "req_get_single_van",
+      "parentId": "fld_vans",
+      "modified": 1726169400000,
+      "created": 1726169400000,
+      "url": "{{ _.base_url }}/vans/{{ _.van_id }}",
+      "name": "View Single Van (Public)",
+      "description": "View van details, owner contact, images, and customer reviews",
+      "method": "GET",
+      "headers": [
+        { "name": "Accept", "value": "application/json" }
+      ],
+      "authentication": {},
+      "metaSortKey": 203,
+      "_type": "request"
+    },
+    {
+      "_id": "req_get_my_vans",
+      "parentId": "fld_vans",
+      "modified": 1726169400000,
+      "created": 1726169400000,
+      "url": "{{ _.base_url }}/my-vans",
+      "name": "List My Vans (Van Owner)",
+      "description": "Lists only the vans owned by the currently logged-in Van Owner",
+      "method": "GET",
+      "headers": [
+        { "name": "Accept", "value": "application/json" }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.owner_token }}"
+      },
+      "metaSortKey": 204,
+      "_type": "request"
+    },
+    {
+      "_id": "req_create_van",
+      "parentId": "fld_vans",
+      "modified": 1726169400000,
+      "created": 1726169400000,
+      "url": "{{ _.base_url }}/vans",
+      "name": "Create Van (Van Owner)",
+      "description": "Allows a Van Owner to add a new van to their fleet",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"make\": \"Ram\",\n  \"model\": \"ProMaster 2500\",\n  \"year\": 2024,\n  \"price_per_day\": 110.00,\n  \"description\": \"High roof cargo van equipped with tie-down straps and rear ramp.\"\n}"
+      },
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Accept", "value": "application/json" }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.owner_token }}"
+      },
+      "metaSortKey": 205,
+      "_type": "request"
+    },
+    {
+      "_id": "req_update_van",
+      "parentId": "fld_vans",
+      "modified": 1726169400000,
+      "created": 1726169400000,
+      "url": "{{ _.base_url }}/vans/{{ _.van_id }}",
+      "name": "Update Van (Van Owner)",
+      "description": "Updates a van owned by the authenticated owner",
+      "method": "PUT",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"price_per_day\": 89.99,\n  \"description\": \"Updated description: now includes free GPS navigation and unlimited miles!\"\n}"
+      },
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Accept", "value": "application/json" }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.owner_token }}"
+      },
+      "metaSortKey": 206,
+      "_type": "request"
+    },
+    {
+      "_id": "req_delete_van",
+      "parentId": "fld_vans",
+      "modified": 1726169400000,
+      "created": 1726169400000,
+      "url": "{{ _.base_url }}/vans/{{ _.van_id }}",
+      "name": "Delete Van (Van Owner)",
+      "description": "Deletes a van owned by the authenticated owner",
+      "method": "DELETE",
+      "headers": [
+        { "name": "Accept", "value": "application/json" }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.owner_token }}"
+      },
+      "metaSortKey": 207,
+      "_type": "request"
+    },
+    {
+      "_id": "req_rbac_customer_create_van",
+      "parentId": "fld_vans",
+      "modified": 1726169400000,
+      "created": 1726169400000,
+      "url": "{{ _.base_url }}/vans",
+      "name": "[RBAC Test 403] Customer Tries to Create Van",
+      "description": "Verifies that Customers cannot create vans (Returns 403 Forbidden)",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"make\": \"Ford\",\n  \"model\": \"Transit\",\n  \"year\": 2022\n}"
+      },
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Accept", "value": "application/json" }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.customer_token }}"
+      },
+      "metaSortKey": 208,
+      "_type": "request"
+    },
+    {
+      "_id": "fld_images",
+      "parentId": "wrk_van_rental_api",
+      "modified": 1726169400000,
+      "created": 1726169400000,
+      "name": "3. Van Images",
+      "description": "Endpoints to upload, list, replace, and delete van images",
+      "environment": {},
+      "metaSortKey": 300,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_get_van_images",
+      "parentId": "fld_images",
+      "modified": 1726169400000,
+      "created": 1726169400000,
+      "url": "{{ _.base_url }}/vans/{{ _.van_id }}/images",
+      "name": "List Images for a Van (Public)",
+      "description": "Lists all images attached to the van, including their full URLs",
+      "method": "GET",
+      "headers": [
+        { "name": "Accept", "value": "application/json" }
+      ],
+      "authentication": {},
+      "metaSortKey": 301,
+      "_type": "request"
+    },
+    {
+      "_id": "req_upload_van_image",
+      "parentId": "fld_images",
+      "modified": 1726169400000,
+      "created": 1726169400000,
+      "url": "{{ _.base_url }}/vans/{{ _.van_id }}/images",
+      "name": "Upload Van Image (Van Owner)",
+      "description": "Uploads an image file to the van. Requires multipart/form-data with file field 'image'.",
+      "method": "POST",
+      "body": {
+        "mimeType": "multipart/form-data",
+        "params": [
+          { "name": "image", "type": "file", "fileName": "van_front.jpg" },
+          { "name": "is_primary", "value": "1" }
+        ]
+      },
+      "headers": [
+        { "name": "Accept", "value": "application/json" }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.owner_token }}"
+      },
+      "metaSortKey": 302,
+      "_type": "request"
+    },
+    {
+      "_id": "req_replace_van_image",
+      "parentId": "fld_images",
+      "modified": 1726169400000,
+      "created": 1726169400000,
+      "url": "{{ _.base_url }}/van-images/{{ _.image_id }}",
+      "name": "Replace Van Image (Van Owner)",
+      "description": "Replaces the file and/or updates primary flag for an image",
+      "method": "POST",
+      "body": {
+        "mimeType": "multipart/form-data",
+        "params": [
+          { "name": "image", "type": "file", "fileName": "new_van_front.jpg" },
+          { "name": "is_primary", "value": "1" }
+        ]
+      },
+      "headers": [
+        { "name": "Accept", "value": "application/json" }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.owner_token }}"
+      },
+      "metaSortKey": 303,
+      "_type": "request"
+    },
+    {
+      "_id": "req_delete_van_image",
+      "parentId": "fld_images",
+      "modified": 1726169400000,
+      "created": 1726169400000,
+      "url": "{{ _.base_url }}/van-images/{{ _.image_id }}",
+      "name": "Delete Van Image (Van Owner)",
+      "description": "Removes the image from storage and database",
+      "method": "DELETE",
+      "headers": [
+        { "name": "Accept", "value": "application/json" }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.owner_token }}"
+      },
+      "metaSortKey": 304,
+      "_type": "request"
+    },
+    {
+      "_id": "fld_reviews",
+      "parentId": "wrk_van_rental_api",
+      "modified": 1726169400000,
+      "created": 1726169400000,
+      "name": "4. Van Reviews",
+      "description": "Customer reviews, ratings, and authorization checks",
+      "environment": {},
+      "metaSortKey": 400,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_get_van_reviews",
+      "parentId": "fld_reviews",
+      "modified": 1726169400000,
+      "created": 1726169400000,
+      "url": "{{ _.base_url }}/vans/{{ _.van_id }}/reviews",
+      "name": "List Reviews for Van (Public)",
+      "description": "Displays reviews with rating, comments, timestamps, and customer name",
+      "method": "GET",
+      "headers": [
+        { "name": "Accept", "value": "application/json" }
+      ],
+      "authentication": {},
+      "metaSortKey": 401,
+      "_type": "request"
+    },
+    {
+      "_id": "req_create_review",
+      "parentId": "fld_reviews",
+      "modified": 1726169400000,
+      "created": 1726169400000,
+      "url": "{{ _.base_url }}/vans/{{ _.van_id }}/reviews",
+      "name": "Create Review (Customer)",
+      "description": "Customer leaves a review with 1-5 rating and comment",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"rating\": 5,\n  \"comment\": \"Amazing van! The rental process was seamless and the owner was very helpful.\"\n}"
+      },
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Accept", "value": "application/json" }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.customer_token }}"
+      },
+      "metaSortKey": 402,
+      "_type": "request"
+    },
+    {
+      "_id": "req_update_review",
+      "parentId": "fld_reviews",
+      "modified": 1726169400000,
+      "created": 1726169400000,
+      "url": "{{ _.base_url }}/reviews/{{ _.review_id }}",
+      "name": "Update Review (Review Author)",
+      "description": "Customer updates their own review rating or comment",
+      "method": "PUT",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"rating\": 5,\n  \"comment\": \"Updated review: Highly recommended for any long camping trip!\"\n}"
+      },
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Accept", "value": "application/json" }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.customer_token }}"
+      },
+      "metaSortKey": 403,
+      "_type": "request"
+    },
+    {
+      "_id": "req_delete_review",
+      "parentId": "fld_reviews",
+      "modified": 1726169400000,
+      "created": 1726169400000,
+      "url": "{{ _.base_url }}/reviews/{{ _.review_id }}",
+      "name": "Delete Review (Review Author)",
+      "description": "Customer removes their review",
+      "method": "DELETE",
+      "headers": [
+        { "name": "Accept", "value": "application/json" }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.customer_token }}"
+      },
+      "metaSortKey": 404,
+      "_type": "request"
+    },
+    {
+      "_id": "req_rbac_owner_review_own_van",
+      "parentId": "fld_reviews",
+      "modified": 1726169400000,
+      "created": 1726169400000,
+      "url": "{{ _.base_url }}/vans/1/reviews",
+      "name": "[RBAC Test 403] Van Owner Tries to Review Own Van",
+      "description": "Verifies that Van Owners cannot review their own van (Returns 403 Forbidden)",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"rating\": 5,\n  \"comment\": \"My own van is the best in the world!\"\n}"
+      },
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "Accept", "value": "application/json" }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.owner_token }}"
+      },
+      "metaSortKey": 405,
+      "_type": "request"
+    }
+  ]
+}
