@@ -12,7 +12,7 @@ return new class extends Migration
         Schema::create('van_images', function (Blueprint $table) {
             $table->id();
             $table->foreignId('van_id')->constrained('vans')->onDelete('cascade');
-            $table->string('url');
+            $table->string('image_path');
             $table->boolean('is_primary')->default(false);
             $table->timestamps();
         });

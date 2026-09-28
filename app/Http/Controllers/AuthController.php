@@ -4,26 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
-use App\Models\User;
+use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    /**
-     * Register a new user (Customer or Van Owner).
-     */
+    public function __construct(private AuthService $authService)
+    {
+    }
+
     public function register(RegisterRequest $request): JsonResponse
     {
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'phone_number' => $request->phone_number,
-            'role' => $request->role,
-        ]);
-
+        $user = $this->authService->register($request->validated());
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
@@ -34,14 +27,11 @@ class AuthController extends Controller
         ], 201);
     }
 
-    /**
-     * Authenticate an existing user and return an access token.
-     */
     public function login(LoginRequest $request): JsonResponse
     {
-        $user = User::where('email', $request->email)->first();
+        $user = $this->authService->login($request->validated());
 
-        if (! $user || ! Hash::check($request->password, $user->password)) {
+        if (!$user) {
             return response()->json([
                 'message' => 'Invalid credentials provided.',
             ], 401);
@@ -57,9 +47,6 @@ class AuthController extends Controller
         ], 200);
     }
 
-    /**
-     * Log out the authenticated user (revoke current token).
-     */
     public function logout(Request $request): JsonResponse
     {
         $request->user()->currentAccessToken()->delete();
@@ -69,9 +56,6 @@ class AuthController extends Controller
         ], 200);
     }
 
-    /**
-     * Get the authenticated user's profile.
-     */
     public function me(Request $request): JsonResponse
     {
         return response()->json([

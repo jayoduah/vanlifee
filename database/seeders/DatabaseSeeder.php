@@ -32,6 +32,10 @@ class DatabaseSeeder extends Seeder
             'role' => 'owner',
         ]);
 
+        $owner3 = User::create([
+            'name'=> 'abdullah',
+            'email'=> 'abdullah',
+
         // 2. Create Customers
         $customer1 = User::create([
             'name' => 'Bob (Customer)',
